@@ -3,4 +3,4 @@
 set -o errexit
 set -o nounset
 
-celery -A main.celery worker --autoscale 20,1 -Q master-strategy,custom-strategy --loglevel=info
+celery -A main.celery worker -B --autoscale 20,1 -Q master-strategy,custom-strategy --loglevel=info

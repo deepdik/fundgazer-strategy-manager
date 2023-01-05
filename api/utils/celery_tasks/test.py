@@ -3,7 +3,6 @@ import datetime
 import time
 
 from celery.schedules import crontab
-from api.service.service import test_async
 from main import celery, settings
 
 
@@ -17,7 +16,7 @@ def test_celery(x, y):
 @celery.task(name='first_time_run_strategy', autoretry_for=(Exception,),
              max_retries=3, retry_backoff=True)
 def run_first_time_strategy():
-    asyncio.run(test_async())
+
     return {"status": True}
 
 
@@ -30,19 +29,21 @@ def periodic_(*args, **kwargs):
     pass
 
 
-celery.conf.beat_schedule = {
-    'binance_kline_data_refresh': {
-        'task': 'periodic_binance_kline',
-        'schedule': crontab(minute='*/1'),
-        'args': [],
-        'kwargs': {'symbols': settings.SYMBOL_LIST, "exchange": 'binance', 'interval': '1d'},
-        'options': {'queue': 'data-handler'}
-    },
-    'binance_ticker_data_refresh': {
-        'task': 'periodic_binance_ticker',
-        'schedule': crontab(minute='*/1'),
-        'args': [],
-        'kwargs': {"symbols": settings.SYMBOL_LIST},
-        'options': {'queue': 'data-handler'}
-    },
-}
+# celery.conf.beat_schedule = {
+#     'binance_kline_data_refresh': {
+#         'task': 'periodic_binance_kline',
+#         'schedule': crontab(minute=''),
+#         'args': [],
+#         'kwargs': {'symbols': settings.SYMBOL_LIST, "exchange": 'binance', 'interval': '1d'},
+#         'options': {'queue': 'data-handler'}
+#     },
+#     'binance_ticker_data_refresh': {
+#         'task': 'periodic_binance_ticker',
+#         'schedule': crontab(minute=''),
+#         'args': [],
+#         'kwargs': {"symbols": settings.SYMBOL_LIST},
+#         'options': {'queue': 'data-handler'}
+#     },
+# }
+
+

@@ -1,6 +1,8 @@
+import asyncio
 import os
 
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+from pymongo import InsertOne, DeleteMany, ReplaceOne, UpdateOne
 
 from config.config import get_config
 from utils.logger import logger_config
@@ -21,7 +23,6 @@ class MongoManager:
 
     @classmethod
     async def get_instance(cls):
-
         if cls.__db is None:
             await cls.connect_to_database(setting.DB_URI)
         return cls.__db
@@ -36,19 +37,20 @@ class MongoManager:
             # in milliseconds
             maxIdleTimeMS=10000,
             # minimal pool size
-            minPoolSize=1,
+            minPoolSize=10,
             # maximal pool size
             maxPoolSize=50,
             # connection timeout in miliseconds
-            connectTimeoutMS=10000,
+            connectTimeoutMS=30000,
             # boolean
             retryWrites=True,
             # wait queue in miliseconds
-            waitQueueTimeoutMS=10000,
+            waitQueueTimeoutMS=30000,
             # in miliseconds
-            serverSelectionTimeoutMS=10000
+            serverSelectionTimeoutMS=30000
         )
 
+        cls.__client.get_io_loop = asyncio.get_running_loop
         if os.getenv("ENVIRONMENT") == "PRD":
             cls.__db = cls.__client.proddb
         elif os.getenv("ENVIRONMENT") == "STG":

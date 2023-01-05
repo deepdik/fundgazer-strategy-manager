@@ -8,10 +8,6 @@ load_dotenv('config/environ/.env')
 
 
 class Settings(BaseSettings):
-    APP_NAME: str = "Data handler API"
-
-
-class Settings(BaseSettings):
     """app config settings"""
 
     PROJECT_NAME: str = "dataHandler"
@@ -35,6 +31,8 @@ class Settings(BaseSettings):
     HTTP_REQ_TIMEOUT_SLEEP: int
     ASYNC_TIMEOUT_SLEEP: int
     ERROR_RETRY_COUNT: int
+
+    TASK_CRON_SLEEP: int
 
     class Config:
         case_sensitive = True

@@ -13,8 +13,6 @@ services:
     restart: on-failure
     ports:
       - 8001:8001
-    depends_on:
-      - rabbitmq
     networks:
       - strategy-network
 
@@ -33,24 +31,22 @@ services:
     command: /start-celeryworker
     volumes:
       - .:/app
-    depends_on:
-      - rabbitmq
     networks:
       - strategy-network
 
-  strategy-celery-beat:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - .:/app
-    image: dk5f95/strategy-celery-beat
-    command: /start-celerybeat
-    depends_on:
-      - strategy-celery-worker
-      - rabbitmq
-    networks:
-      - strategy-network
+#  strategy-celery-beat:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    volumes:
+#      - .:/app
+#    image: dk5f95/strategy-celery-beat
+#    command: /start-celerybeat
+#    depends_on:
+#      - strategy-celery-worker
+#      - rabbitmq
+#    networks:
+#      - strategy-network
 
   rabbitmq:
       image: "rabbitmq:3.8-management"
