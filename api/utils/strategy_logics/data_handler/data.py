@@ -2,6 +2,7 @@ import multiprocessing
 import pandas as pd
 import concurrent.futures
 
+from api.models.general_models import Exchange
 from api.utils.api_client.internal.data_handler import kline_data_client
 
 PICKLE_DATA_FOLDER = "PickledData"
@@ -56,7 +57,12 @@ class Live_DataHandler:
         self.start_previous_candle_index = None
 
     async def init_data(self, latest_candle_index=None):
-        resp, status = await kline_data_client(self.symbol_list, self.timeframe)
+        resp, status = None, False
+        if self.exchange.lower() == Exchange.BINANCE:
+            resp, status = await kline_data_client(self.symbol_list, self.timeframe)
+        elif self.exchange.lower() == Exchange.ZERODHA:
+            resp, status = await kline_data_client(self.symbol_list, self.timeframe)
+
         if status:
             self.ohlcv_db_func = resp
         else:

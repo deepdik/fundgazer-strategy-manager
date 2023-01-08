@@ -20,12 +20,9 @@ class PresetDataVersion(int, Enum):
 
 
 class BaseDataModel(BaseModel):
-    symbols: str
     date: datetime
-    index_cls: str
-    exchange: str
-    timeframe: str
     version: PresetDataVersion
+    ms_id: str
 
     class Config:
         allow_population_by_field_name = True
@@ -39,9 +36,11 @@ class FilteredStocksModel(BaseDataModel):
 
 class UserPresetDataModel(BaseDataModel):
     preset_data: str
+    user_id: str
 
 
 class MasterPresetDataModel(BaseDataModel):
     preset_data: str
+
 
 

@@ -10,10 +10,7 @@ async def save_master_preset_data(data: MasterPresetDataModel):
     print(data)
     database = await MongoManager.get_instance()
     query = {
-        "symbols": data.symbols,
-        "exchange": data.exchange,
-        "timeframe": data.timeframe,
-        "index_cls": data.index_cls,
+        "ms_id": data.ms_id,
         "version": data.version
     }
     json_data = jsonable_encoder(data)
@@ -22,14 +19,10 @@ async def save_master_preset_data(data: MasterPresetDataModel):
     await database.master_preset_data.update_one(query, update, upsert=True)
 
 
-async def get_master_preset_data(symbols: str, exchange: str,
-                                 timeframe: str, index_cls: str, version: PresetDataVersion):
+async def get_master_preset_data(ms_id: str, version: PresetDataVersion):
     database = await MongoManager.get_instance()
     query = {
-        "symbols": symbols,
-        "exchange": exchange,
-        "timeframe": timeframe,
-        "index_cls": index_cls,
+        "ms_id": ms_id,
         "version": version
     }
     # return await database.master_preset_data.find(query).sort([('date', 1), ]).limit(1).to_list(10)
@@ -37,7 +30,7 @@ async def get_master_preset_data(symbols: str, exchange: str,
     if preset_data:
         return preset_data
     else:
-        # get first time run version
+        # get first time run version of master strategy
         query["version"] = PresetDataVersion.VERSION_0.value
         return await database.master_preset_data.find_one(query, {'_id': False})
 
@@ -45,10 +38,7 @@ async def get_master_preset_data(symbols: str, exchange: str,
 async def save_filtered_stocks(data: FilteredStocksModel):
     database = await MongoManager.get_instance()
     query = {
-        "symbols": data.symbols,
-        "exchange": data.exchange,
-        "timeframe": data.timeframe,
-        "index_cls": data.index_cls,
+        "ms_id": data.ms_id,
         "version": data.version
     }
     update = {"$set": jsonable_encoder(data)}
@@ -56,14 +46,10 @@ async def save_filtered_stocks(data: FilteredStocksModel):
     await database.filtered_stocks.update_one(query, update, upsert=True)
 
 
-async def get_filtered_stocks(symbols: str, exchange: str,
-                              timeframe: str, index_cls: str, version: PresetDataVersion):
+async def get_filtered_stocks(ms_id: str, version: PresetDataVersion):
     database = await MongoManager.get_instance()
     query = {
-        "symbols": symbols,
-        "exchange": exchange,
-        "timeframe": timeframe,
-        "index_cls": index_cls,
+        "ms_id": ms_id,
         "version": version
     }
     # await database.filtered_stocks.drop()
@@ -73,10 +59,8 @@ async def get_filtered_stocks(symbols: str, exchange: str,
 async def save_user_preset_data(data: UserPresetDataModel):
     database = await MongoManager.get_instance()
     query = {
-        "symbols": data.symbols,
-        "exchange": data.exchange,
-        "timeframe": data.timeframe,
-        "index_cls": data.index_cls,
+        "ms_id": data.ms_id,
+        "user_id": data.user_id,
         "version": data.version
     }
     update = {"$set": jsonable_encoder(data)}
@@ -84,16 +68,14 @@ async def save_user_preset_data(data: UserPresetDataModel):
     await database.user_preset_data.update_one(query, update, upsert=True)
 
 
-async def get_user_preset_data(symbols: str, exchange: str,
-                               timeframe: str, index_cls: str, version: PresetDataVersion):
+async def get_user_preset_data(ms_id: str, user_id: str, version: PresetDataVersion):
     database = await MongoManager.get_instance()
-    query = {"symbols": symbols,
-             "exchange": exchange,
-             "timeframe": timeframe,
-             "index_cls": index_cls,
-             "version": version
-             }
+    query = {
+        "ms_id": ms_id,
+        "user_id": user_id,
+        "version": version
+    }
     data = await database.user_preset_data.find_one(query, {'_id': False})
     if not data:
-        return await get_master_preset_data(symbols, exchange, timeframe, index_cls, version)
+        return await get_master_preset_data(ms_id, version)
     return data

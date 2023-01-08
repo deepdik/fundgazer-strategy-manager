@@ -8,9 +8,9 @@ from api.utils.datetime_convertor import get_current_local_time
 
 
 class TaskType(str, Enum):
-    RUN_MASTER_STRATEGY = "run_user_strategy"
-    RUN_USER_STRATEGY = 'run_master_strategy'
-    RUN_FIRST_TIME_STRATEGY = "run_first_time_strategy"
+    RUN_MASTER_STRATEGY = "1"
+    RUN_USER_STRATEGY = '2'
+    RUN_FIRST_TIME_STRATEGY = "0"
 
 
 class TaskDueType(str, Enum):

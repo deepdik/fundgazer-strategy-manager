@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     DB_URI: str = os.getenv("MONGODB_URI")
     DATE_FORMAT = "DD-MM-YYYY"
     LOCAL_TIME_ZONE = "Asia/Calcutta"
+    STRATEGIES_DATABASE: str
+
 
     CELERY_BROKER_URL: str
     CELERY_RESULT_BACKEND: str
@@ -33,6 +35,7 @@ class Settings(BaseSettings):
     ERROR_RETRY_COUNT: int
 
     TASK_CRON_SLEEP: int
+
 
     class Config:
         case_sensitive = True

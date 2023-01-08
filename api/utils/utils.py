@@ -22,6 +22,9 @@ def is_required_scheduling(cron_syntax, minutes: int):
     now = datetime.datetime.now()
     next_schedule = now + datetime.timedelta(minutes=minutes)
     # sched = '1 15 1,15 * *'    # at 3:01pm on the 1st and 15th of every month
+    if not croniter.croniter.is_valid(cron_syntax):
+        print("Invalid cron syntax")
+        return False, None
     cron = croniter.croniter(cron_syntax, now)
     next = cron.get_next(datetime.datetime)
     if next_schedule > cron.get_next(datetime.datetime):

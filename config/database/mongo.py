@@ -20,6 +20,7 @@ class MongoManager:
 
     __client: AsyncIOMotorClient = None
     __db: AsyncIOMotorDatabase = None
+    __db_instances: dict = {}
 
     @classmethod
     async def get_instance(cls):
@@ -29,38 +30,52 @@ class MongoManager:
 
     # database connect and close connections
     @classmethod
-    async def connect_to_database(cls, path: str):
+    async def connect_to_database(cls, path: str, database_name=None):
         # logger.info("Connecting to MongoDB")
         print(path, "path")
-        cls.__client = AsyncIOMotorClient(
-            path,
-            # in milliseconds
-            maxIdleTimeMS=10000,
-            # minimal pool size
-            minPoolSize=10,
-            # maximal pool size
-            maxPoolSize=50,
-            # connection timeout in miliseconds
-            connectTimeoutMS=30000,
-            # boolean
-            retryWrites=True,
-            # wait queue in miliseconds
-            waitQueueTimeoutMS=30000,
-            # in miliseconds
-            serverSelectionTimeoutMS=30000
-        )
+        if cls.__client is None:
+            cls.__client = AsyncIOMotorClient(
+                path,
+                # in milliseconds
+                maxIdleTimeMS=8000,
+                # minimal pool size
+                minPoolSize=10,
+                # maximal pool size
+                maxPoolSize=500,
+                # connection timeout in miliseconds
+                connectTimeoutMS=30000,
+                # boolean
+                retryWrites=True,
+                # wait queue in miliseconds
+                waitQueueTimeoutMS=30000,
+                # in miliseconds
+                serverSelectionTimeoutMS=30000
+            )
 
         cls.__client.get_io_loop = asyncio.get_running_loop
-        if os.getenv("ENVIRONMENT") == "PRD":
-            cls.__db = cls.__client.proddb
-        elif os.getenv("ENVIRONMENT") == "STG":
-            cls.__db = cls.__client.stagedb
+
+        if database_name == setting.STRATEGIES_DATABASE:
+            logger.info("Connecting to database..." + database_name)
+            cls.__db_instances[database_name] = cls.__client.fundgazer
         else:
-            cls.__db = cls.__client.devdb
+            logger.info("Connecting to default database...")
+            # for default database
+            if os.getenv("ENVIRONMENT") == "PRD":
+                cls.__db = cls.__client.prod_strategy_manager
+            elif os.getenv("ENVIRONMENT") == "STG":
+                cls.__db = cls.__client.stage_strategy_manager
+            else:
+                cls.__db = cls.__client.devdb
 
         logger.info(
             "Connected to MongoDB -  %s environment!", os.getenv("ENV")
         )
+
+    @classmethod
+    async def get_instance_by_database(cls, database_name: str):
+        if cls.__db_instances.get(database_name, None) is None:
+            await cls.connect_to_database(setting.DB_URI, database_name)
+        return cls.__db_instances.get(database_name)
 
     @classmethod
     async def close_database_connection(cls):

@@ -1,6 +1,11 @@
 from pydantic.types import Enum
 
 
+class Exchange(str, Enum):
+    BINANCE = 'binance'
+    ZERODHA = 'zerodha'
+
+
 class APIMethodEnum(str, Enum):
     POST = 'post'
     GET = 'get'
