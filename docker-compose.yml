@@ -9,7 +9,7 @@ services:
     image: dk5f95/strategy-manager
     command: uvicorn main:app --host 0.0.0.0 --reload --port 8001
     volumes:
-      - /Volumes/MyLab/freelance/strategyManager:/app
+      - .:/app
     restart: on-failure
     ports:
       - 8001:8001

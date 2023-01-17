@@ -25,9 +25,8 @@ async def testing():
 
     result = test_celery.apply_async(queue='master-strategy', priority=9, args=[1, 2], eta=one_m)
     print(result.id, "+++++++++++")
-    #result = celery.control.revoke(result.id)
-    #print(result)
-
+    # result = celery.control.revoke(result.id)
+    # print(result)
 
     # one_m = datetime.utcnow() + timedelta(minutes=.1)
     # run_first_time_strategy.apply_async(queue='custom-strategy', priority=9, args=[], eta=one_m)
@@ -44,16 +43,24 @@ async def testing():
 @router.get("/test", response_description="")
 async def test(symbols: str):
     # API call
+
     # await test_async()
-    # ADAUSDT,SOLUSDT,XRPUSDT,DOTUSDT,LTCUSDT,UNIUSDT,LINKUSDT,BCHUSDT,MATICUSDT,XLMUSDT,VETUSDT,ETCUSDT,XMRUSDT,EOSUSDT,QTUMUSDT,ICXUSDT,NULSUSDT,SUSHIUSDT,AAVEUSDT,OXTUSDT,BTCUSDT,GRTUSDT,BATUSDT,ZECUSDT,THETAUSDT,DASHUSDT,IOTAUSDT,SNXUSDT,RENUSDT,INJUSDT,COTIUSDT,1INCHUSDT,KNCUSDT,UMAUSDT,STXUSDT,BNTUSDT,CAKEUSDT,NMRUSDT,CRVUSDT,CELOUSDT,COMPUSDT,MKRUSDT,DCRUSDT,ATOMUSDT,BANDUSDT,EGLDUSDT,KAVAUSDT,NEARUSDT,ROSEUSDT
+    # ADAUSDT,SOLUSDT,XRPUSDT,DOTUSDT,LTCUSDT,UNIUSDT,LINKUSDT,BCHUSDT,MATICUSDT,XLMUSDT,VETUSDT,ETCUSDT,
+    # XMRUSDT,EOSUSDT,QTUMUSDT,ICXUSDT,NULSUSDT,SUSHIUSDT,AAVEUSDT,OXTUSDT,BTCUSDT,GRTUSDT,BATUSDT,ZECUSDT,
+    # THETAUSDT,DASHUSDT,IOTAUSDT,SNXUSDT,RENUSDT,INJUSDT,COTIUSDT,1INCHUSDT,KNCUSDT,UMAUSDT,STXUSDT,BNTUSDT,
+    # CAKEUSDT,NMRUSDT,CRVUSDT,CELOUSDT,COMPUSDT,MKRUSDT,DCRUSDT,ATOMUSDT,BANDUSDT,EGLDUSDT,KAVAUSDT,NEARUSDT
+
     # symbols_list = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "LTCUSDT", "ADAUSDT",
-    #           "LINKUSDT", "MATICUSDT", "UNIUSDT", "XRPUSDT", "BNBUSDT"]
+    #                 "LINKUSDT", "MATICUSDT", "UNIUSDT", "XRPUSDT", "BNBUSDT"]
 
     symbols_list = symbols.split(",")
 
-    #await push_task_in_queue()
-    await first_time_run_strategy(symbols_list, '1d', 'binance')
-    #await run_master_strategy(symbols_list, '1d', 'binance')
-    #await run_user_strategy(symbols_list, '1d', 'binance')
+    # await push_task_in_queue()
+    #await first_time_run_strategy(symbols_list, '1d', 'binance')
+
+    symbols_list = "NSE:SBIN-EQ,NSE:SBICARD-EQ,NSE:BAJAJHLDNG-EQ"
+    await first_time_run_strategy(symbols_list.split(","), 'D', 'fyers')
+    # await run_master_strategy(symbols_list, '1d', 'binance')
+    # await run_user_strategy(symbols_list, '1d', 'binance')
 
     # return JSONResponse(status_code=200, content={"message": "401"})

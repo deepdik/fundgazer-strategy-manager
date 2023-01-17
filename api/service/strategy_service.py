@@ -2,13 +2,12 @@ import json
 
 from api.models.strategy_model import MasterPresetDataModel, FilteredStocksModel, UserPresetDataModel, PresetDataVersion
 from api.repository.strategy_repo import save_user_preset_data, save_master_preset_data, save_filtered_stocks, \
-    get_master_preset_data, get_user_preset_data, get_filtered_stocks
+    get_master_preset_data, get_user_preset_data, get_filtered_stocks, save_stock_weightage
 from api.utils.datetime_convertor import get_current_local_time
 from api.utils.strategy_logics.data_handler.data import Live_DataHandler
 from api.utils.strategy_logics.port.mpt_index import Index3
 from api.utils.strategy_logics.strategy.mpt_strategies import Strategy_direct_comparision_index3
-from api.utils.utils import create_symbol_hash, NumpyEncoder
-from config.database.mongo import MongoManager
+from api.utils.utils import NumpyEncoder
 from utils.logger import logger_config
 
 logger = logger_config(__name__)
@@ -31,7 +30,7 @@ async def first_time_run_strategy(symbols: list, timeframe: str,
 
         # Store master-id day -1
         preset_strategy_data = strategy.get_data_to_save()
-        #print(preset_strategy_data)
+        # print(preset_strategy_data)
         validated_data = MasterPresetDataModel(
             date=get_current_local_time(),
             version=PresetDataVersion.VERSION_0,
@@ -41,7 +40,7 @@ async def first_time_run_strategy(symbols: list, timeframe: str,
 
         await save_master_preset_data(validated_data)
         return True
-        #return preset_strategy_data
+        # return preset_strategy_data
     except Exception as e:
         logger.error(e)
         return False
@@ -62,7 +61,7 @@ async def run_master_strategy(symbols: list, timeframe: str, exchange: str, ms_i
     else:
         raise ValueError("No preset data found...")
 
-    #preset_data = await first_time_run_strategy(symbols, timeframe, exchange)
+    # preset_data = await first_time_run_strategy(symbols, timeframe, exchange)
     strategy = Strategy_direct_comparision_index3(data, index_cls, db_saved_data=preset_data)
     filter_stocks = strategy.master_find_entry()
     preset_strategy_data = strategy.get_data_to_save()
@@ -83,13 +82,12 @@ async def run_master_strategy(symbols: list, timeframe: str, exchange: str, ms_i
         preset_data=json.dumps(preset_strategy_data, cls=NumpyEncoder)
     )
     await save_master_preset_data(validated_data)
-    #return preset_strategy_data, filter_stocks
+    # return preset_strategy_data, filter_stocks
 
 
 async def run_user_strategy(symbols: list, timeframe: str,
-                            exchange: str,  user_id: str, ms_id: str='0', index_cls=Index3,
+                            exchange: str, user_id: str, ms_id: str = '0', index_cls=Index3,
                             capital=10000):
-
     logger.info(f"Started user strategies with {symbols} {timeframe}")
     local_date = get_current_local_time()
     version = PresetDataVersion(local_date.weekday())
@@ -103,7 +101,7 @@ async def run_user_strategy(symbols: list, timeframe: str,
         logger.error("No filtered stock...")
         raise ValueError("No preset data found...")
 
-    #preset_strategy_data, filter_stocks = await run_master_strategy(symbols, timeframe, exchange)
+    # preset_strategy_data, filter_stocks = await run_master_strategy(symbols, timeframe, exchange)
     filter_stocks = []
     filter_stocks_obj = await get_filtered_stocks(ms_id, version)
     if filter_stocks_obj:
@@ -111,7 +109,7 @@ async def run_user_strategy(symbols: list, timeframe: str,
 
     if not filter_stocks:
         logger.error("No filtered stock...")
-        #raise ValueError("No filtered stock...")
+        # raise ValueError("No filtered stock...")
         filter_stocks = ["ICXUSDT"]
 
     data = Live_DataHandler(symbols, timeframe, exchange)
@@ -135,3 +133,7 @@ async def run_user_strategy(symbols: list, timeframe: str,
     await save_user_preset_data(validated_data)
     # TODO: send stock weightage
     logger.info(f"Stock weightage ----->{stocks_weightage}")
+    await save_stock_weightage(
+        {"ms_id": ms_id, "user_id": user_id,
+         "stocks_weightage": stocks_weightage,
+         "version": version})

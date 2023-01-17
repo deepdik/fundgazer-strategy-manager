@@ -4,6 +4,7 @@ from pydantic.types import Enum
 class Exchange(str, Enum):
     BINANCE = 'binance'
     ZERODHA = 'zerodha'
+    FYERS = 'fyers'
 
 
 class APIMethodEnum(str, Enum):

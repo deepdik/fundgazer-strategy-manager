@@ -10,7 +10,7 @@ load_dotenv('config/environ/.env')
 class Settings(BaseSettings):
     """app config settings"""
 
-    PROJECT_NAME: str = "dataHandler"
+    PROJECT_NAME: str = ""
     VERSION: str = "1.0"
     DESCRIPTION: str = "description"
     SECRET_KET: str = None
@@ -20,7 +20,6 @@ class Settings(BaseSettings):
     LOCAL_TIME_ZONE = "Asia/Calcutta"
     STRATEGIES_DATABASE: str
 
-
     CELERY_BROKER_URL: str
     CELERY_RESULT_BACKEND: str
     CELERY_ACKS_LATE: bool
@@ -28,6 +27,7 @@ class Settings(BaseSettings):
     DATA_HANDLER_BASE: str
     DATA_HANDLER_KLINE: str
     DATA_HANDLER_TICKER: str
+    FLYPER_CANDLE: str
 
     HTTP_TOO_MANY_REQ_SLEEP: int
     HTTP_REQ_TIMEOUT_SLEEP: int
@@ -35,7 +35,6 @@ class Settings(BaseSettings):
     ERROR_RETRY_COUNT: int
 
     TASK_CRON_SLEEP: int
-
 
     class Config:
         case_sensitive = True

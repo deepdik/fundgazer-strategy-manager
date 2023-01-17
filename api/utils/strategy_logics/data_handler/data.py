@@ -3,7 +3,7 @@ import pandas as pd
 import concurrent.futures
 
 from api.models.general_models import Exchange
-from api.utils.api_client.internal.data_handler import kline_data_client
+from api.utils.api_client.internal.data_handler import fyers_kline_data_client, kline_data_client
 
 PICKLE_DATA_FOLDER = "PickledData"
 
@@ -59,14 +59,21 @@ class Live_DataHandler:
     async def init_data(self, latest_candle_index=None):
         resp, status = None, False
         if self.exchange.lower() == Exchange.BINANCE:
+            print(f"Start getting data for {self.symbol_list} timeframe => {self.timeframe} exchange => {self.exchange}")
             resp, status = await kline_data_client(self.symbol_list, self.timeframe)
         elif self.exchange.lower() == Exchange.ZERODHA:
             resp, status = await kline_data_client(self.symbol_list, self.timeframe)
+        elif self.exchange.lower() == Exchange.FYERS:
+            resp, status = await fyers_kline_data_client(self.symbol_list, self.timeframe)
+        else:
+            raise ValueError("Invalid Exchange")
 
         if status:
             self.ohlcv_db_func = resp
+            print(f"Successfully got data from data-handler =>>>>>status-{status}")
         else:
             raise ValueError("No kline data found")
+
         self._get_candle_from_db(latest_candle_index)
 
     def preset_data(self, preset_count=20):

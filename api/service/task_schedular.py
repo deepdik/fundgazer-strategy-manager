@@ -1,14 +1,11 @@
 from datetime import datetime, timedelta
 
-from requests import request
 
-from api.models.general_models import TaskDueType, DataRefreshType
+from api.models.general_models import TaskDueType
 from api.models.task_schedular_model import TaskModel
 from api.repository.task_schedular import save_task_schedular_data
 from api.validators.task_schedular import TaskSchedulerValidator, TaskValidator
-from utils.exception_handler import value_error_exception_handler
 from utils.logger import logger_config
-from utils.response_handler import response
 
 logger = logger_config(__name__)
 

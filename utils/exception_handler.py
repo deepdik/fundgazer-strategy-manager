@@ -2,12 +2,12 @@ from fastapi import Request, status
 
 from main import app
 from fastapi.exceptions import RequestValidationError
-from fastapi.encoders import jsonable_encoder
 
 from utils.logger import logger_config
 from utils.response_handler import response
 
 logger = logger_config(__name__)
+
 
 @app.exception_handler(RequestValidationError)
 def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -25,6 +25,3 @@ def value_error_exception_handler(request: Request, exc: ValueError):
 def internal_server_error(request: Request, exc: RequestValidationError):
     logger.error(exc)
     return response(error="Internal server error. Please try after some time", status_code=500)
-
-
-

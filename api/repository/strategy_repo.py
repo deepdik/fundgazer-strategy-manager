@@ -79,3 +79,9 @@ async def get_user_preset_data(ms_id: str, user_id: str, version: PresetDataVers
     if not data:
         return await get_master_preset_data(ms_id, version)
     return data
+
+
+async def save_stock_weightage(data):
+    database = await MongoManager.get_instance()
+    # await database.filtered_stocks.drop()
+    await database.stock_weightage.insert_one(data)

@@ -1,9 +1,7 @@
 import asyncio
-import json
 from typing import List, Dict
 
 import aiohttp
-import requests as requests
 
 from api.models.general_models import APIMethodEnum
 

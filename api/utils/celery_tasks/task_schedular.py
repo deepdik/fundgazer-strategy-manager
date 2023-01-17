@@ -12,6 +12,10 @@ from utils.logger import logger_config
 
 logger = logger_config(__name__)
 
+TEST_SYMBOLS = "ICXUSDT,XMRUSDT,EOSUSDT,QTUMUSDT,ETCUSDT,VETUSDT,XLMUSDT,ETHUSDT,ADAUSDT,SOLUSDT,XRPUSDT,DOTUSDT," \
+               "LTCUSDT,UNIUSDT,LINKUSDT,BCHUSDT,MATICUSDT,BTCUSDT,SNXUSDT,AAVEUSDT,RENUSDT,COMPUSDT,IOTAUSDT," \
+               "KAVAUSDT,ATOMUSDT,MKRUSDT"
+
 
 @celery.task(name='run_strategy', autoretry_for=(Exception,),
              max_retries=3, retry_backoff=True)
@@ -36,23 +40,24 @@ def run_strategy(*args, **kwargs):
 @celery.task(name='push_task_in_queue', autoretry_for=(Exception,),
              max_retries=3, retry_backoff=True)
 def push_task_in_queue():
-
     # get task list
     tasks = asyncio.run(get_task_list())
-    #tasks = await get_task_list()
+    # tasks = await get_task_list()
     # for master Strategy
+    print(tasks)
     for task in tasks["master_strategy"]:
+        print("Started adding master strategy task")
         status, schedule_time = is_required_scheduling(task.get("runTime"), settings.TASK_CRON_SLEEP)
         if task.get('status') and status:
             if isinstance(task.get('symbolList'), list):
                 symbol_list = task.get('symbolList')
             elif isinstance(task.get('symbolList'), str):
-                symbol_list = json.loads(task.get('symbolList'))
+                symbol_list = task.get('symbolList').split(",")
 
             payload = {
                 "symbols": symbol_list,
-                "timeframe":  task.get('timeFrame'),
-                "exchange":  task.get('exchangeDetail')[0].get("exchangeName"),
+                "timeframe": task.get('timeFrame'),
+                "exchange": task.get('exchangeDetail')[0].get("exchangeName"),
                 "ms_id": task.get('msId'),
             }
 
@@ -75,18 +80,19 @@ def push_task_in_queue():
             )
 
     for task in tasks["user_strategy"]:
+        print("Started adding user strategy task")
         status, schedule_time = is_required_scheduling(task.get("runTime"), settings.TASK_CRON_SLEEP)
         if task.get('status') and status:
             if isinstance(task.get("msDetail")[0].get('symbolList'), list):
                 symbol_list = task.get("msDetail")[0].get('symbolList')
             elif isinstance(task.get("msDetail")[0].get('symbolList'), str):
-                symbol_list = json.loads(task.get("msDetail")[0].get('symbolList'))
+                symbol_list = task.get("msDetail")[0].get('symbolList').split(",")
 
             payload = {
                 "capital": task.get('amountAdded'),
                 "symbols": symbol_list,
-                "timeframe":  task.get("msDetail")[0].get('timeFrame'),
-                "exchange":  task.get('exchangeName'),
+                "timeframe": task.get("msDetail")[0].get('timeFrame'),
+                "exchange": task.get('exchangeName'),
                 "ms_id": task.get('msId'),
                 "user_id": task.get('userId'),
             }
@@ -102,9 +108,9 @@ def push_task_in_queue():
 
 
 celery.conf.beat_schedule = {
-    'run_every_9_min': {
+    'run_every_10_min': {
         'task': 'push_task_in_queue',
-        'schedule': crontab(minute="*/9"),
+        'schedule': crontab(minute="*/10"),
         'args': [],
         'kwargs': [],
         'options': {'queue': 'task-queue'}

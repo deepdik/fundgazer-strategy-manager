@@ -2,7 +2,6 @@ import asyncio
 import time
 
 import aiohttp.web
-import requests as requests
 
 from api.models.general_models import APIMethodEnum
 from api.utils.api_caller_utils import request_url
