@@ -31,6 +31,6 @@ def is_required_scheduling(cron_syntax, minutes: int):
     cron = croniter.croniter(cron_syntax, now)
     next = cron.get_next(datetime.datetime)
     print(f"next cron schedule==>{next}")
-    if now <= next_schedule < next:
+    if now <= next < next_schedule:
         return True, next
     return False, None
