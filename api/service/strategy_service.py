@@ -98,7 +98,7 @@ async def run_user_strategy(symbols: list, timeframe: str,
     if preset_strategy_data:
         preset_strategy_data = json.loads(preset_strategy_data["preset_data"])
     else:
-        logger.error("No filtered stock...")
+        logger.error("No preset data found...")
         raise ValueError("No preset data found...")
 
     # preset_strategy_data, filter_stocks = await run_master_strategy(symbols, timeframe, exchange)
