@@ -44,10 +44,11 @@ def push_task_in_queue():
     tasks = asyncio.run(get_task_list())
     # tasks = await get_task_list()
     # for master Strategy
-    print(tasks)
+    logger.info(tasks)
     for task in tasks["master_strategy"]:
-        print("Started adding master strategy task")
+        logger.info("Started adding master strategy task")
         status, schedule_time = is_required_scheduling(task.get("runTime"), settings.TASK_CRON_SLEEP)
+        logger.info(f"got status and runtime {status}, {schedule_time}")
         if task.get('status') and status:
             if isinstance(task.get('symbolList'), list):
                 symbol_list = task.get('symbolList')
@@ -70,7 +71,7 @@ def push_task_in_queue():
                 priority = 8
                 task_type = TaskType.RUN_MASTER_STRATEGY
 
-            logger.info(payload)
+            logger.info(f"task added in master queue with payload ==> {payload}")
             run_strategy.apply_async(
                 queue=queue,
                 priority=priority,
@@ -78,10 +79,12 @@ def push_task_in_queue():
                 kwargs=payload,
                 eta=schedule_time
             )
+            logger.info(f"task added in master queue successfully")
 
     for task in tasks["user_strategy"]:
-        print("Started adding user strategy task")
+        logger.info("Started adding user strategy task")
         status, schedule_time = is_required_scheduling(task.get("runTime"), settings.TASK_CRON_SLEEP)
+        logger.info(f"got status and runtime {status}, {schedule_time}")
         if task.get('status') and status:
             if isinstance(task.get("msDetail")[0].get('symbolList'), list):
                 symbol_list = task.get("msDetail")[0].get('symbolList')
@@ -97,7 +100,7 @@ def push_task_in_queue():
                 "user_id": task.get('userId'),
             }
 
-            logger.info(payload)
+            logger.info(f"task added in user queue with payload ==> {payload}")
             run_strategy.apply_async(
                 queue="user-strategy",
                 priority=7,
@@ -105,6 +108,7 @@ def push_task_in_queue():
                 kwargs=payload,
                 eta=schedule_time
             )
+            logger.info(f"task added in user queue successfully")
 
 
 celery.conf.beat_schedule = {

@@ -41,7 +41,7 @@ from config.database.mongo import MongoManager
 @app.on_event("startup")
 async def startup():
     logger.info("db connection startup")
-    await MongoManager().connect_to_database(get_config().DB_URI)
+    await MongoManager().connect_to_database(settings.DB_URI)
 
 
 @app.on_event("shutdown")
