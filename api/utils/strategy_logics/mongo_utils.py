@@ -9,7 +9,7 @@ from api.utils.strategy_logics import constants
 # cached_client = MongoClient(os.getenv("MONGO_URL"))
 # cached_db = cached_client[os.getenv("MONGO_DB")]
 
-load_dotenv('/config/environ/.env')
+load_dotenv("/config/environ/.env")
 DATA_HANDLER_BASE = os.environ["DATA_HANDLER_BASE"]
 KLINE_DATA = os.environ["DATA_HANDLER_KLINE"]
 
@@ -27,14 +27,12 @@ def _convert_to_ohlcv(ohlcv):
 
 class DbManager:
     def __init__(self, platform):
-
         self.platform = platform
         self.client = ""
 
         self.db = ""
 
     def close(self):
-
         self.client.close()
         self.client = None
         self.db = None
@@ -54,7 +52,6 @@ class DbManager:
         return bin_data
 
     def save_strategy_data(self, strategy_name, platform, bin_data):
-
         doc = {
             "strategy_name": strategy_name,
             "platform": platform,
@@ -71,14 +68,11 @@ class DbManager:
         )
 
     def get_ohlcv_config(self, platform, timeframe):
-
         return self.db[constants.MONGO_OHLCV_DATA_CONFIG_COLLECTION].find_one(
             {"platform": platform, "timeframe": timeframe}
         )
 
     async def _get_candles(self, symbol, timeframe, n):
-
-
         return []
 
     def get_1m_candles(self, symbol, n=3000):
@@ -94,14 +88,13 @@ class DbManager:
         return await self._get_candles(symbol, "1d", n=n)
 
     def update_pattern_backtest_progress(
-            self,
-            config_file_name,
-            config_id,
-            indicator_file_name,
-            status: str,
-            error_msg: str = None,
+        self,
+        config_file_name,
+        config_id,
+        indicator_file_name,
+        status: str,
+        error_msg: str = None,
     ):
-
         crrent_time = datetime.now()
         save_data = {
             "status": status,
@@ -123,13 +116,12 @@ class DbManager:
         )
 
     def update_indicator_job(
-            self,
-            config_file_name,
-            indicator_file_name,
-            status: str,
-            error_msg: str = None,
+        self,
+        config_file_name,
+        indicator_file_name,
+        status: str,
+        error_msg: str = None,
     ):
-
         crrent_time = datetime.now()
         save_data = {
             "status": status,
@@ -147,11 +139,10 @@ class DbManager:
         )
 
     def queue_pattern_backtest_job(
-            self,
-            config_file_name,
-            indicator_file_name,
+        self,
+        config_file_name,
+        indicator_file_name,
     ):
-
         crrent_time = datetime.now()
         save_data = {
             "status": "QUEUED",
@@ -168,9 +159,9 @@ class DbManager:
         )
 
     def delete_pattern_backtest_job(
-            self,
-            config_file_name,
-            indicator_file_name,
+        self,
+        config_file_name,
+        indicator_file_name,
     ):
         self.db["patternBacktest"].delete_many(
             {
@@ -180,7 +171,7 @@ class DbManager:
         )
 
     def add_pattern_backtest_job(
-            self, pattern_jobs: list, status="GENERATING_INDICATOR_PICKLE"
+        self, pattern_jobs: list, status="GENERATING_INDICATOR_PICKLE"
     ):
         crrent_time = datetime.now()
         for job in pattern_jobs:
@@ -199,7 +190,6 @@ class DbManager:
     def get_next_pattern_job(self, number_of_jobs=1):
         jobs = []
         for _ in range(number_of_jobs):
-
             job = self.db["patternBacktest"].find_one_and_update(
                 filter={"status": "QUEUED"},
                 update={"$set": {"status": "IN_PROGRESS"}},
@@ -242,8 +232,8 @@ def commit_with_retry(session):
             print("Transaction committed.")
             break
         except (
-                pymongo.errors.ConnectionFailure,
-                pymongo.errors.OperationFailure,
+            pymongo.errors.ConnectionFailure,
+            pymongo.errors.OperationFailure,
         ) as exc:
             # Can retry commit
             if exc.has_error_label("UnknownTransactionCommitResult"):
@@ -265,8 +255,8 @@ def run_transaction_with_retry(functor, session):
                 commit_with_retry(session)
             break
         except (
-                pymongo.errors.ConnectionFailure,
-                pymongo.errors.OperationFailure,
+            pymongo.errors.ConnectionFailure,
+            pymongo.errors.OperationFailure,
         ) as exc:
             # If transient error, retry the whole transaction
             if exc.has_error_label("TransientTransactionError"):

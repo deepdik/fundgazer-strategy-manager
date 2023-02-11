@@ -4,7 +4,7 @@ from functools import lru_cache
 from pydantic import BaseSettings
 from dotenv import load_dotenv
 
-load_dotenv('config/environ/.env')
+load_dotenv("config/environ/.env")
 
 
 class Settings(BaseSettings):

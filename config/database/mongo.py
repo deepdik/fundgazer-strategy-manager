@@ -2,7 +2,8 @@ import asyncio
 import os
 
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
-from pymongo import InsertOne, DeleteMany, ReplaceOne, UpdateOne
+
+# from pymongo import InsertOne, DeleteMany, ReplaceOne, UpdateOne
 
 from config.config import get_config
 from utils.logger import logger_config
@@ -49,7 +50,7 @@ class MongoManager:
                 # wait queue in miliseconds
                 waitQueueTimeoutMS=30000,
                 # in miliseconds
-                serverSelectionTimeoutMS=30000
+                serverSelectionTimeoutMS=30000,
             )
 
         cls.__client.get_io_loop = asyncio.get_running_loop
@@ -67,9 +68,7 @@ class MongoManager:
             else:
                 cls.__db = cls.__client.devdb
 
-        logger.info(
-            "Connected to MongoDB -  %s environment!", os.getenv("ENV")
-        )
+        logger.info("Connected to MongoDB -  %s environment!", os.getenv("ENV"))
 
     @classmethod
     async def get_instance_by_database(cls, database_name: str):

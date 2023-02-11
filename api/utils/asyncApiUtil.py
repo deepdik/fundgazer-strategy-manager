@@ -14,11 +14,7 @@ async def request_multiple_urls(urls: List[str]):
     async with aiohttp.ClientSession() as session:
         tasks: List[asyncio.Task] = []
         for url in urls:
-            tasks.append(
-                asyncio.ensure_future(
-                    get_url(session, url)
-                )
-            )
+            tasks.append(asyncio.ensure_future(get_url(session, url)))
         return await asyncio.gather(*tasks)
 
 

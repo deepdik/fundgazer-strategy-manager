@@ -1,5 +1,6 @@
 import hashlib
 import json
+from typing import Tuple
 
 import numpy as np
 import croniter
@@ -10,7 +11,7 @@ from api.utils.datetime_convertor import get_current_local_time
 
 def create_symbol_hash(symbols):
     symbols.sort()
-    return hashlib.sha1('-'.join(symbols).encode("utf-8")).hexdigest()
+    return hashlib.sha1("-".join(symbols).encode("utf-8")).hexdigest()
 
 
 class NumpyEncoder(json.JSONEncoder):
@@ -20,7 +21,9 @@ class NumpyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def is_required_scheduling(cron_syntax, minutes: int):
+def is_required_scheduling(
+    cron_syntax: str, minutes: int
+) -> Tuple[bool, datetime.datetime]:
     now = get_current_local_time()
     next_schedule = now + datetime.timedelta(minutes=minutes)
     # sched = '1 15 1,15 * *'    # at 3:01pm on the 1st and 15th of every month

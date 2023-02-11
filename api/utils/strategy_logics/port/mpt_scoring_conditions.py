@@ -24,20 +24,22 @@ def ema_condition(symbol, data, period_ema, trend="Breakout"):
 
 
 def rising_adx_condition(symbol, data, period_adx, rising_period, trend="Breakout"):
-    score = 0
-    if trend == "Breakout":
-        trend_factor = 1
-    else:
-        trend_factor = -1
-    adx_series = adx(data.latest_symbol_data[symbol], period_adx)
-    if not adx_series[-rising_period] == adx_series[-rising_period]:
+    try:
+        score = 0
+        if trend == "Breakout":
+            trend_factor = 1
+        else:
+            trend_factor = -1
+        adx_series = adx(data.latest_symbol_data[symbol], period_adx)
+        if not adx_series[-rising_period] == adx_series[-rising_period]:
+            return 0
+        if adx_series[-rising_period] < adx_series[-1]:
+            score += 1
+        else:
+            score -= 1
+        return score * trend_factor
+    except IndexError:
         return 0
-    if adx_series[-rising_period] < adx_series[-1]:
-        score += 1
-    else:
-        score -= 1
-    return score * trend_factor
-
 
 def adx_ema_condition(symbol, data, period_adx, period_ema, trend="Breakout"):
     score = 0
@@ -74,36 +76,41 @@ def obv_ema_condition(symbol, data, period_ema, trend="Breakout"):
 
 
 def long_rsi_condition(symbol, data, period_rsi, trend="Breakout"):
-    score = 0
-    if trend == "Breakout":
-        trend_factor = 1
-    else:
-        trend_factor = -1
-    rsi_series = rsi(data.latest_symbol_data[symbol], period_rsi)
-    if not (rsi_series[-1] == rsi_series[-1]):
+    try:
+        score = 0
+        if trend == "Breakout":
+            trend_factor = 1
+        else:
+            trend_factor = -1
+        rsi_series = rsi(data.latest_symbol_data[symbol], period_rsi)
+        if not (rsi_series[-1] == rsi_series[-1]):
+            return 0
+        if rsi_series[-1] > 60:
+            score += 1
+        if rsi_series[-1] < 40:
+            score -= 1
+        return score * trend_factor
+    except IndexError:
         return 0
-    if rsi_series[-1] > 60:
-        score += 1
-    if rsi_series[-1] < 40:
-        score -= 1
-    return score * trend_factor
 
 
 def short_rsi_condition(symbol, data, period_rsi, trend="Breakout"):
-    score = 0
-    if trend == "Breakout":
-        trend_factor = 1
-    else:
-        trend_factor = -1
-    rsi_series = rsi(data.latest_symbol_data[symbol], period_rsi)
-    if not (rsi_series[-1] == rsi_series[-1]):
+    try:
+        score = 0
+        if trend == "Breakout":
+            trend_factor = 1
+        else:
+            trend_factor = -1
+        rsi_series = rsi(data.latest_symbol_data[symbol], period_rsi)
+        if not (rsi_series[-1] == rsi_series[-1]):
+            return 0
+        if rsi_series[-1] > 80:
+            score += 1
+        if rsi_series[-1] < 20:
+            score -= 1
+        return score * trend_factor
+    except IndexError:
         return 0
-    if rsi_series[-1] > 80:
-        score += 1
-    if rsi_series[-1] < 20:
-        score -= 1
-    return score * trend_factor
-
 
 def standard_deviation_condition(symbol, data, median_std, trend="Breakout"):
     score = 0

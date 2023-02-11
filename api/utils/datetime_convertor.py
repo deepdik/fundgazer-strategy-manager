@@ -7,7 +7,9 @@ from config.config import get_config
 settings = get_config()
 
 
-def convert_utc_to_local(timestamp, time_zone=settings.LOCAL_TIME_ZONE, need_date=False):
+def convert_utc_to_local(
+    timestamp, time_zone=settings.LOCAL_TIME_ZONE, need_date=False
+):
     """
     convert UTC to Local Time zone
     """

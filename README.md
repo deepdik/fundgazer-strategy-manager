@@ -59,4 +59,3 @@ http://localhost:8000/docs
 ```
 http://localhost:8000/api/v1/hello
 ```
-

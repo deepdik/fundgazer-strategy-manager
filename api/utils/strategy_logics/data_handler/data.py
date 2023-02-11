@@ -17,29 +17,11 @@ resample_conversion = {
 
 
 class Live_DataHandler:
-    """
-    Priliminary_DataHandler is designed to read CSV files for
-    each requested symbol from disk and provide an interface
-    to obtain the "latest" bar in a manner identical to a live
-    trading interface.
-    """
-
     def __init__(self, symbol_list, timeframe, exchange):
-        """
-        Initialises the historic data handler by requesting
-        the location of the CSV files and a list of symbols.
-        It will be assumed that all files are of the form
-        ’symbol.csv’, where symbol is a string in the list.
-        Parameters:
-        events - The Event Queue.
-        csv_dir - Absolute directory path to the CSV files.
-        symbol_list - A list of symbol strings.
-        """
         self.ohlcv_db_func = None
         self.symbol_list = list(set(symbol_list))
         self.symbol_data = {}
         self.symbol_dataframe = {}
-        # self.all_data = {}
         self.timeframe = timeframe
         self.latest_symbol_data = {}
         self.continue_backtest = True
@@ -86,22 +68,9 @@ class Live_DataHandler:
         for symbol in self.symbol_list:
             self.latest_symbol_data[symbol] = self.symbol_dataframe[symbol]
 
-    def _get_candle_from_db(self, latest_candle_index):
-        """
-        Opens the CSV files from the data directory, converting
-        them into pandas DataFrames within a symbol dictionary.
-        """
-        #
-        # self.candle_count = (
-        #     signature(self.ohlcv_db_func).parameters["n"].default + latest_candle_index
-        #     if latest_candle_index
-        #     else signature(self.ohlcv_db_func).parameters["n"].default
-        # )
-        self.candle_count = 500
-
-        # if latest_candle_index and latest_candle_index > 1:
-        #     self.start_previous_candle_index = 1 - latest_candle_index
-
+    def _get_candle_from_db(self, candle_count=500):
+        self.candle_count = candle_count
+        
         with concurrent.futures.ThreadPoolExecutor(
                 max_workers=multiprocessing.cpu_count() * 5
         ) as executor:
@@ -112,8 +81,11 @@ class Live_DataHandler:
                 result: dict = future.result()
                 s = list(result.keys())[0]
                 df = list(result.values())[0]
+                if df is None:
+                    print("WARNING: DATA NOT FOUND, SYMBOL WILL BE IGNORED:", s)
+                    continue
 
-                if df.empty:
+                if isinstance(df,pd.DataFrame) and df.empty:
                     print("WARNING: DATA NOT FOUND, SYMBOL WILL BE IGNORED:", s)
                     continue
 
@@ -126,7 +98,7 @@ class Live_DataHandler:
 
         self.symbol_list = list(self.latest_symbol_data.keys())
 
-        # check if latest candle for all symbols have the same time stamp
+        # check if latest candle for all symbols have the same timestamp
         t_list = []
         s_list = []
         for symbol in self.symbol_list:
@@ -144,6 +116,7 @@ class Live_DataHandler:
         self.symbol_list.sort()
 
     def _get_symbol_data(self, s):
+
         db_data = None
         for k_data in self.ohlcv_db_func:
             if k_data["symbol"] == s:
@@ -151,9 +124,8 @@ class Live_DataHandler:
                 break
 
         if not db_data:
-            print(f"No data forund for {s}")
-
-        # print(f"Fetched data from DB for: {s}")
+            print(f"No data found for {s}")  # we can raise an error here
+            return {s: []}
 
         if self.start_previous_candle_index:
             # spliting the data so that last candle is based on latest_candle_index
@@ -168,7 +140,6 @@ class Live_DataHandler:
         # df.index = pd.to_datetime(df.index / 1000, unit="s")
 
         # df = df.resample(self.timeframe).apply(resample_conversion).dropna()
-
         return {s: df}
 
     def get_latest_bar(self, symbol):

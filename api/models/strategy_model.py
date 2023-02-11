@@ -43,4 +43,13 @@ class MasterPresetDataModel(BaseDataModel):
     preset_data: str
 
 
+class CONDITION_TYPE(Enum):
+    breakout = "Breakout"
+    reversal = "Reversal"
 
+class FILTERING_TYPE(Enum):
+    breakout = "Breakout"
+    reversal = "Reversal"
+
+class MPT_STRATEGIES_VARIABLES(Enum):
+    number_of_candles = 200

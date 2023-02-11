@@ -10,10 +10,16 @@ def logger_config(module):
     return: Logger object
     usage: logger_config(__name__)
     """
-    level = logging.DEBUG if os.environ['ENV'] == 'DEV' else logging.ERROR
-    log_file = os.path.join(os.getcwd() + "/logs/", "logs-" + str(date.today()) + ".log")
-    logging.basicConfig(filename=log_file, format=' %(levelname)s - %(asctime)s - %(module)s - %(message)s',
-                        filemode='a', level=level)
+    level = logging.DEBUG if os.environ["ENV"] == "DEV" else logging.ERROR
+    log_file = os.path.join(
+        os.getcwd() + "/logs/", "logs-" + str(date.today()) + ".log"
+    )
+    logging.basicConfig(
+        filename=log_file,
+        format=" %(levelname)s - %(asctime)s - %(module)s - %(message)s",
+        filemode="a",
+        level=level,
+    )
     handler = logging.StreamHandler()
     logger = logging.getLogger(module)
     logger.setLevel(os.getenv("LOG_LEVEL", level))

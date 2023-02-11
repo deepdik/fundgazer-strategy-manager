@@ -7,7 +7,7 @@ from config.database.mongo import MongoManager
 
 
 async def save_master_preset_data(data: MasterPresetDataModel):
-    print(data)
+    # print(data)
     database = await MongoManager.get_instance()
     query = {
         "ms_id": data.ms_id,

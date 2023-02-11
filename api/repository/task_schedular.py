@@ -10,34 +10,38 @@ async def save_task_schedular_data(data: TaskModel):
     await database.scheduled_task.insert_one(jsonable_encoder(data))
 
 
-async def get_task_list():
+async def get_task_list() -> dict:
     database = await MongoManager.get_instance_by_database(settings.STRATEGIES_DATABASE)
 
     query1 = {
-        "$lookup":
-             {
-                "from": "exchanges",
-                "localField": "supportedExchangeId",
-                "foreignField": "exchangeId",
-                "as": "exchangeDetail"
-             }
-       }
-    query2 = {"$match": {"status": 'active'}}
-    task = {"master_strategy": await database.masterstrategies.aggregate([query1, query2]).to_list(1000)}
-    # get master strategies
+        "$lookup": {
+            "from": "exchanges",
+            "localField": "supportedExchangeId",
+            "foreignField": "exchangeId",
+            "as": "exchangeDetail",
+        }
+    }
+    query2 = {"$match": {"status": "active"}}
+    task = {
+        "master_strategy": await database.masterstrategies.aggregate(
+            [query1, query2]
+        ).to_list(1000)
+    }
 
+    # get master strategies
     query1 = {
-        "$lookup":
-             {
-                "from": "masterstrategies",
-                "localField": "msId",
-                "foreignField": "msId",
-                "as": "msDetail"
-             }
-       }
+        "$lookup": {
+            "from": "masterstrategies",
+            "localField": "msId",
+            "foreignField": "msId",
+            "as": "msDetail",
+        }
+    }
 
     # get user strategies
-    task["user_strategy"] = await database.strategies.aggregate([query1, query2]).to_list(1000)
+    task["user_strategy"] = await database.strategies.aggregate(
+        [query1, query2]
+    ).to_list(1000)
     return task
 
 

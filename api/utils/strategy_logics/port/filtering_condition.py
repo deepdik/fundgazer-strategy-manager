@@ -9,7 +9,7 @@ from api.utils.strategy_logics.port.mpt_scoring_conditions import (
     rising_adx_condition,
     short_rsi_condition,
     standard_deviation_condition,
-    standard_deviation_negetive_condition
+    standard_deviation_negetive_condition,
     # relative_strength_with_index,
 )
 
