@@ -2,23 +2,23 @@ from datetime import datetime
 from enum import Enum
 
 from bson import ObjectId
-from pydantic import BaseModel, Field, json
+from pydantic import BaseModel
 
 from api.utils.datetime_convertor import get_current_local_time
 
 
 class TaskType(str, Enum):
     RUN_MASTER_STRATEGY = "1"
-    RUN_USER_STRATEGY = '2'
+    RUN_USER_STRATEGY = "2"
     RUN_FIRST_TIME_STRATEGY = "0"
 
 
 class TaskDueType(str, Enum):
-    WEEKS = 'weeks'
-    DAYS = 'days'
-    MINUTES = 'minutes'
-    HOURS = 'hours'
-    SECONDS = 'seconds'
+    WEEKS = "weeks"
+    DAYS = "days"
+    MINUTES = "minutes"
+    HOURS = "hours"
+    SECONDS = "seconds"
 
 
 class TaskModel(BaseModel):
