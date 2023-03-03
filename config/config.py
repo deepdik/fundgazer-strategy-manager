@@ -5,6 +5,7 @@ from pydantic import BaseSettings
 from dotenv import load_dotenv
 
 load_dotenv("config/environ/.env")
+# load_dotenv("config/environ/local.apurv.env")
 
 
 class Settings(BaseSettings):
@@ -39,6 +40,7 @@ class Settings(BaseSettings):
     class Config:
         case_sensitive = True
         env_file = "/config/environ/.env"
+        # env_file = "/config/environ/local.apurv.env"
 
 
 @lru_cache

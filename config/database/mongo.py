@@ -57,7 +57,7 @@ class MongoManager:
 
         if database_name == setting.STRATEGIES_DATABASE:
             logger.info("Connecting to database..." + database_name)
-            cls.__db_instances[database_name] = cls.__client.fundgazer
+            cls.__db_instances[database_name] = cls.__client["fundgazer-dev"]
         else:
             logger.info("Connecting to default database...")
             # for default database

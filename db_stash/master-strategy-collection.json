@@ -1,0 +1,21 @@
+[{
+  "_id": {
+    "$oid": "63e7f64c6862301cb452aba4"
+  },
+  "msId": "1",
+  "msName": "Strategy_relative_comparision_index4_holdings_Index4_Reversal_Breakout",
+  "noOfDays": "7",
+  "portfolioId": "portId1",
+  "runTime": "30 0 * * *",
+  "timeFrame": "D"
+},{
+  "_id": {
+    "$oid": "63f7c6b7375ace472743dcfc"
+  },
+  "msId": "2",
+  "msName": "Strategy_relative_comparision_combined_index4_br_Index4_Breakout_Reversal",
+  "noOfDays": "7",
+  "portfolioId": "portId1",
+  "runTime": "30 0 * * *",
+  "timeFrame": "D"
+}]

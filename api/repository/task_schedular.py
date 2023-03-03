@@ -45,6 +45,17 @@ async def get_task_list() -> dict:
     return task
 
 
+async def get_task_list_new() -> dict:
+    database = await MongoManager.get_instance_by_database(settings.STRATEGIES_DATABASE)
+    # get user strategies
+    task = await database["masterstrategies"].find({}).to_list(100)
+    # task = await database["master-strategy-collection"].find_one({})
+    # task = await database["master-strategy-collection"].count_documents({})
+    # task = await database.master_strategy_collection.count_documents({})
+    print("Task:", task)
+    return task
+
+
 async def update_strategies(ms_id: str):
     database = await MongoManager.get_instance_by_database(settings.STRATEGIES_DATABASE)
     query = {

@@ -1,0 +1,78 @@
+{
+    "MASTER_STRATEGY_COLLECTION": [
+        {
+            "_id": {
+                "$oid": "63e7f64c6862301cb452aba4"
+            },
+            "mscId": "1",
+            "msName": "Strategy_relative_comparision_index4_holdings_Index4_Reversal_Breakout",
+            "noOfDays": "7",
+            "portfolioId": "portId1",
+            "runTime": "30 0 * * *",
+            "timeFrame": "D",
+        },
+    ],
+    "MASTER_STRATEGIES": [
+        {
+            "_id": "1",
+            "minimumAmount": 10000,
+            "msId": "msId123",
+            "version": 0,
+            "msName": "msName",
+            "noOfDays": "7",
+            "active_days": 0,
+            "portfolioId": "portId123",
+            "runTime": "08:00",
+            "startDate": "12-09-2022",
+            "last_run": "null",
+            "next_run": "null",
+            "status": "active",
+            "supportedExchangeId": "exch123",
+            "symbolList": "ICXUSDT,XMRUSDT,EOSUSDT,QTUMUSDT,ETCUSDT,VETUSDT,XLMUSDT,ETHUSDT,ADAUSDT,SOLUSDT,XRPUSDT,DOTUSDT,LTCUSDT,UNIUSDT,LINKUSDT,BCHUSDT,MATICUSDT,BTCUSDT,SNXUSDT,AAVEUSDT,RENUSDT,COMPUSDT,IOTAUSDT,KAVAUSDT,ATOMUSDT,MKRUSDT",
+            "timeFrame": "D",
+            "isFirstTime": True,
+        },
+        {
+            "_id": "2",
+            "minimumAmount": 10000,
+            "msId": "msId123",
+            "version": 1,
+            "msName": "msName",
+            "noOfDays": "7",
+            "active_days": 0,
+            "portfolioId": "portId123",
+            "runTime": "08:00",
+            "startDate": "12-09-2022",
+            "last_run": "null",
+            "next_run": "null",
+            "status": "active",
+            "supportedExchangeId": "exch123",
+            "symbolList": "ICXUSDT,XMRUSDT,EOSUSDT,QTUMUSDT,ETCUSDT,VETUSDT,XLMUSDT,ETHUSDT,ADAUSDT,SOLUSDT,XRPUSDT,DOTUSDT,LTCUSDT,UNIUSDT,LINKUSDT,BCHUSDT,MATICUSDT,BTCUSDT,SNXUSDT,AAVEUSDT,RENUSDT,COMPUSDT,IOTAUSDT,KAVAUSDT,ATOMUSDT,MKRUSDT",
+            "timeFrame": "1d",
+            "isFirstTime": True,
+        },
+    ],
+    "STRATEGIES": [
+        {
+            "_id": {
+                "$oid": "63c267b0c2d07371729291d6"
+            },
+            "amountAdded": {
+                "$numberLong": "303175"
+            },
+            "exchangeName": "fyers",
+            "expiryDate": "13-10-2022",
+            "fmId": "fmid130",
+            "msId": "msId124",
+            "orderId": "order123",
+            "portfolioId": "port123",
+            "startDate": "12-10-2022",
+            "status": "active",
+            "strategyId": "edcrfvb4321",
+            "userId": "user123",
+            "watchList": "false",
+            "runTime": "0 1 * * *",
+            "fmWatchListId": "",
+        }
+    ],
+}

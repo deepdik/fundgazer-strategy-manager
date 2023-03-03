@@ -12,7 +12,7 @@ from api.service.strategy_service import (
 from api.utils.celery_tasks.task_schedular import push_task_in_queue
 from api.utils.celery_tasks.test import test_celery, run_first_time_strategy
 from config.database.mongo import MongoManager
-from main import celery
+from main import celery, settings
 
 router = APIRouter(
     prefix="/api/v1",
@@ -70,3 +70,15 @@ async def test(symbols: str):
     # await run_user_strategy(symbols_list, '1d', 'binance')
 
     # return JSONResponse(status_code=200, content={"message": "401"})
+
+
+@router.get("/try", response_description="")
+async def try_test():
+    database = await MongoManager.connect_to_database(
+        path=settings.DB_URI, database_name="devdb"
+    )
+    document = {"key": "value"}
+
+    # result = await db.test_collection.insert_one(document)
+    results = await database["master_strategy_collection"].insert_one(document)
+    return results
