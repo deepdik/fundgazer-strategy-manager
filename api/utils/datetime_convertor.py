@@ -65,7 +65,7 @@ def get_holdidays(exchange="fyers"):
     return HOLDIDAYS_NSE
 
 
-def get_business_days(start, end=None, number_of_days=None):
+def get_business_days(start: datetime.date, end: datetime.date=None, number_of_days: int=None):
     if end is None and number_of_days is None:
         end = start + timedelta(days=32)
 
